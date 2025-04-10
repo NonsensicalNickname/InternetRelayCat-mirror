@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 #include <iostream>
 
-namespace catsock {
+namespace Catsock {
   class Socket {
 
     private: 
