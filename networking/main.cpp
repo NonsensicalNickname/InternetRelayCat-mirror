@@ -7,7 +7,8 @@
 #include <iostream>
 
 int main() {
-  Catsock::Socket server_socket = Catsock::Socket(AF_INET,SOCK_STREAM,0,3497,2130706433);
+  u_long ip_bytes = htonl(inet_addr("127.0.0.1"));
+  Catsock::Socket server_socket = Catsock::Socket(AF_INET,SOCK_STREAM,0,3497,ip_bytes);
   int socket_file_descriptor = server_socket.get_sock_fdesc();
   int socket_connection = server_socket.get_connection();
   std::cout << socket_file_descriptor << " " << socket_connection;
