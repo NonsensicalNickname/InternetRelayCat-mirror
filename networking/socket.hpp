@@ -10,17 +10,18 @@
 
 namespace Catsock {
   class Socket {
-
     private: 
       struct sockaddr_in address;
       int sock_fdesc;
       int connection;
     public:
       Socket(int family, int service, int protocol, int port, u_long interface);
+      virtual int establish_connection(int sock_fdesc, struct sockaddr_in address) = 0;
       void check_connection(int val);
       struct sockaddr_in get_address();
       int get_sock_fdesc();
       int get_connection();
+      void set_connection(int target);
   };
 }
 

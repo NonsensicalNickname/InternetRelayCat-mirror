@@ -9,8 +9,6 @@ Catsock::Socket::Socket(int family, int service, int protocol, int port, u_long 
 
   sock_fdesc = socket(family, service, protocol);
   check_connection(sock_fdesc);
-  connection = bind(sock_fdesc, (struct sockaddr *)&address, sizeof address);
-  check_connection(connection);
 }
 
 void Catsock::Socket::check_connection(int val) {
@@ -29,6 +27,10 @@ int Catsock::Socket::get_sock_fdesc() {
 int Catsock::Socket::get_connection() {
  return connection;
 }
+void Catsock::Socket::set_connection(int target) {
+  connection = target;
+}
+
 /*
 int main() {
   //u_long ip_bytes = inet_addr("127.0.0.1");
