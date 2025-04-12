@@ -7,4 +7,10 @@ int main() {
   int socket_file_descriptor = server_socket.get_sock_fdesc();
   int socket_connection = server_socket.get_connection();
   std::cout << socket_file_descriptor << " " << socket_connection << "\n";
+
+  char buf[32];
+  int bytes_received;
+
+  bytes_received = recv(socket_file_descriptor, buf, sizeof buf, 0);
+  std::cout << buf;
 }

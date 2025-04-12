@@ -17,7 +17,7 @@ int main() {
   new_fd = accept(socket_file_descriptor, (struct sockaddr *)&client_addr, &client_addr_size);
   std::cout << new_fd;
 
-  char *response_msg = "arf arf awruff :3 \n";
+  constexpr const char *response_msg = "arf arf awruff :3\n";
   int len, bytes_sent;
   len = strlen(response_msg);
   bytes_sent = send(new_fd, response_msg, len, 0);
