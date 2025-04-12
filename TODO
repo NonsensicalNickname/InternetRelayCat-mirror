@@ -1,6 +1,6 @@
 Socket lib
   - refactor to use getaddrinfo
-  - abstract class with subclass for server/client (bind/connect)
+  - go through and make sure things are checked for error return values
 
 IRC Commands
   - NICK: set nickname
