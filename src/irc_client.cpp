@@ -1,17 +1,17 @@
-#include <memory>  // for allocator, __shared_ptr_access
-#include <string>  // for char_traits, operator+, string, basic_string
+#include <memory> 
+#include <string>
 #include <iostream>
 
 #include "csocket.cpp"
 #include <cstring>
  
-#include "ftxui/component/captured_mouse.hpp"  // for ftxui
-#include "ftxui/component/component.hpp"       // for Input, Renderer, Vertical
-#include "ftxui/component/component_base.hpp"  // for ComponentBase
-#include "ftxui/component/component_options.hpp"  // for InputOption
-#include "ftxui/component/screen_interactive.hpp"  // for Component, ScreenInteractive
-#include "ftxui/dom/elements.hpp"  // for text, hbox, separator, Element, operator|, vbox, border
-#include "ftxui/util/ref.hpp"  // for Ref
+#include "ftxui/component/captured_mouse.hpp"
+#include "ftxui/component/component.hpp"    
+#include "ftxui/component/component_base.hpp"
+#include "ftxui/component/component_options.hpp"  
+#include "ftxui/component/screen_interactive.hpp"
+#include "ftxui/dom/elements.hpp"  
+#include "ftxui/util/ref.hpp"
 
 struct login_info {
   std::string nick;
@@ -23,23 +23,20 @@ struct login_info login() {
   using namespace ftxui;
  
   auto screen = ScreenInteractive::TerminalOutput();
-  // The data:
+
   std::string nick;
   std::string real_name;
   std::string password;
   std::string button_submit_label = "Submit";
  
-  // The basic input components:
   Component input_nick = Input(&nick, "nick");
   Component input_real_name = Input(&real_name, "real name");
   Component button_submit = Button(&button_submit_label, screen.ExitLoopClosure());
  
-  // The password input component:
   InputOption password_option;
   password_option.password = true;
   Component input_password = Input(&password, "password", password_option);
  
-  // The component tree:
   auto component = Container::Vertical({
       input_nick,
       input_real_name,
@@ -47,20 +44,13 @@ struct login_info login() {
       button_submit,
   });
  
-  // Tweak how the component tree is rendered:
   auto renderer = Renderer(component, [&] {
     return vbox({
       hbox(text(" User nick  : "), input_nick->Render()),
       hbox(text(" Real name  : "), input_real_name->Render()),
       hbox(text(" Password   : "), input_password->Render()),
       separator(),
-      //hbox(
-      //  vbox(
-      //    text("Hello " + nick + real_name),
-      //    text("Your password is " + password)
-      //  ),
-        button_submit->Render()
-      //),
+      button_submit->Render()
     }) | border;
   });
  
