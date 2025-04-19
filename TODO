@@ -2,6 +2,13 @@ Socket lib
   - refactor to use getaddrinfo
   - go through and make sure things are checked for error return values
 
+Actual thingies
+  - irc message class which parses in constructor
+
+TUI 
+  - figure out vim-keybind stuff
+  - basic UI with vim-style :commands and modes instead of menus and windows
+
 IRC Commands
   - NICK: set nickname
   - USER: set username, realname and usermode
