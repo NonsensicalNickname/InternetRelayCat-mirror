@@ -23,6 +23,16 @@ namespace Catsock {
       int get_connection();
       void set_connection(int target);
   };
+  class CSocket : public Socket {
+    public:
+      CSocket(int family, int service, int protocol, int port, u_long interface);
+      int establish_connection(int sock_fdesc, struct sockaddr_in address);
+  };
+  class BSocket : public Socket {
+    public:
+      BSocket(int family, int service, int protocol, int port, u_long interface);
+      int establish_connection(int sock_fdesc, struct sockaddr_in address);
+  };
 }
 
 #endif

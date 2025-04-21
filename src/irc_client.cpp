@@ -1,8 +1,9 @@
 #include <memory> 
 #include <string>
 #include <iostream>
+#include <vector>
 
-#include "csocket.cpp"
+#include "socket.cpp"
 #include <cstring>
  
 #include "ftxui/component/captured_mouse.hpp"
@@ -18,6 +19,41 @@ struct login_info {
   std::string real_name;
   std::string password;
 };
+
+struct irc_msg {
+  std::string prefix = "";
+  std::string command;
+  std::vector<std::string> params;
+};
+
+struct irc_msg parse_msg(std::string s) {
+  std::string trailing = "";
+  irc_msg msg;
+
+  if (s.size() < 1) {
+    std::cout << "there be no string";
+  }
+  if (s[0] == ':') {
+    msg.prefix = s.substr(1, s.find(" "));
+    s.erase(0, s.find(" ")+1);
+  }
+  msg.command = s.substr(0, s.find(" "));
+  s.erase(0, s.find(" ")+1);
+  if (s.find(" :") != std::string::npos) {
+    trailing = s.substr(s.find(" :")+2, std::string::npos);
+    s.erase(s.find(" :"), std::string::npos);
+  }
+  while (s.find(" ") != std::string::npos) {
+    msg.params.push_back(s.substr(0,s.find(" ")));
+    s.erase(0, s.find(" ")+1);
+  }
+  if (s.size()>0) {
+    msg.params.push_back(s);
+  }
+  msg.params.push_back(trailing);
+
+  return msg;
+}
 
 struct login_info login() {
   using namespace ftxui;
@@ -83,9 +119,24 @@ void connect_irc(struct login_info *details) {
     std::cout << "\n new packet: \n";
     char buf[2048];
     int bytes_received;
-
     bytes_received = recv(sock_fdesc, buf, sizeof buf, 0);
-    std::cout << buf << "\n";
+
+    std::string str_buf = buf;
+    std::vector<std::string> messages;
+    while (str_buf.find("\n") != std::string::npos) {
+      messages.push_back(str_buf.substr(0, str_buf.find("\n")));
+      str_buf.erase(0, str_buf.find("\n")+1);
+    }
+
+    for (std::string raw_msg : messages) {
+      irc_msg msg = parse_msg(raw_msg);
+      if (msg.command=="PRIVMSG") {
+        std::cout << "\nprefix=" << msg.prefix << "\ncommand=" << msg.command << "\nparameters=\n";
+        for (std::string ss : msg.params) {
+          std::cout << ss << "\n";
+        }
+      }
+    }
   }
 }
 

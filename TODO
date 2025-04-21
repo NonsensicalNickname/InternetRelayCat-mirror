@@ -1,9 +1,11 @@
 Socket lib
   - refactor to use getaddrinfo
   - go through and make sure things are checked for error return values
+  - Use enum or something instead of such much virtual function 
 
-Actual thingies
-  - irc message class which parses in constructor
+Parsing
+  - add support for tags
+  - implement parsing
 
 TUI 
   - figure out vim-keybind stuff
