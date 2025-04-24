@@ -55,6 +55,45 @@ struct irc_msg parse_msg(std::string s) {
   return msg;
 }
 
+std::string send_message() {
+  using namespace ftxui;
+ 
+  auto screen = ScreenInteractive::TerminalOutput();
+  std::string message_contents;
+  std::string button_send_label = "Send";
+  std::vector<Event> keys;
+  int mode = 0;
+ 
+  Component input_message = Input(&message_contents, "send message");
+  Component button_send = Button(&button_send_label, screen.ExitLoopClosure(), ButtonOption::Ascii());
+ 
+  auto component = Container::Horizontal ({
+    input_message,
+    button_send,
+  });
+ 
+  auto renderer = Renderer(component, [&] {
+    return vbox ({
+      hbox(input_message->Render(),separator(), button_send->Render()),
+    }) | border;
+  });
+
+  renderer |= CatchEvent([&](Event event) {
+    if (event == Event::Character('\e')) {
+      screen.ExitLoopClosure()();
+      return true;
+    }
+    else if (event == Event::Character('\n')) {
+      screen.ExitLoopClosure()();
+      return true;
+    }
+    return false;
+  });
+ 
+  screen.Loop(renderer);
+  return(message_contents);
+}
+
 struct login_info login() {
   using namespace ftxui;
  
@@ -141,6 +180,8 @@ void connect_irc(struct login_info *details) {
 }
 
 int main() {
-  login_info connect_with = login();
-  connect_irc(&connect_with);
+  //login_info connect_with = login();
+  //connect_irc(&connect_with);
+  std::string s = send_message();
+  std::cout << s;
 }
