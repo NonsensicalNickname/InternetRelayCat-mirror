@@ -2,6 +2,8 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <thread>
 
 #include "socket.cpp"
 #include <cstring>
@@ -13,6 +15,7 @@
 #include "ftxui/component/screen_interactive.hpp"
 #include "ftxui/dom/elements.hpp"  
 #include "ftxui/util/ref.hpp"
+#include "ftxui/component/loop.hpp"       // for Loop
 
 struct login_info {
   std::string nick;
@@ -55,6 +58,11 @@ struct irc_msg parse_msg(std::string s) {
   return msg;
 }
 
+struct message_visible {
+  std::string origin;
+  std::string body;
+};
+
 std::string send_message() {
   using namespace ftxui;
  
@@ -92,6 +100,27 @@ std::string send_message() {
  
   screen.Loop(renderer);
   return(message_contents);
+}
+
+std::vector<irc_msg> recv_msgs(int sock_fd) {
+  //std::cout << "\n new packet: \n";
+  char buf[2048];
+  int bytes_received;
+  bytes_received = recv(sock_fd, buf, sizeof buf, 0);
+  std::string str_buf = buf;
+  std::vector<std::string> messages;
+  std::vector<irc_msg> parsed_msgs;
+
+  while (str_buf.find("\n") != std::string::npos) {
+    messages.push_back(str_buf.substr(0, str_buf.find("\n")));
+    str_buf.erase(0, str_buf.find("\n")+1);
+  }
+
+  for (std::string raw_msg : messages) {
+    irc_msg msg = parse_msg(raw_msg);
+    parsed_msgs.push_back(msg);
+  }
+  return parsed_msgs;
 }
 
 struct login_info login() {
@@ -137,51 +166,124 @@ struct login_info login() {
   return(submitted_details);
 }
 
-void connect_irc(struct login_info *details) {
+int login_irc(struct login_info *details, int sock_fd) {
   std::string nick_string = "NICK "+details->nick+"\n";
   std::string user_string = "USER guest 8 * :"+details->real_name+"\n";
+
   const char *nick = nick_string.c_str();
   const char *user = user_string.c_str(); 
 
+  int len, bytes_sent;
+  len = strlen(nick);
+  bytes_sent = send(sock_fd, nick, len, 0);
+  len = strlen(user);
+  bytes_sent = send(sock_fd, user, len, 0);
+  return 1;
+  //std::string to_send = "PRIVMSG Guest98 :wahoo\n";
+  //const char *do_send=  to_send.c_str(); 
+  //len = strlen(do_send);
+  //bytes_sent = send(sock_fdesc, do_send, len, 0);
+}
+
+int connect_irc() {
   u_long ip_bytes = htonl(inet_addr("94.125.182.252"));
   Catsock::CSocket server_socket = Catsock::CSocket(AF_INET,SOCK_STREAM,0,6667,ip_bytes);
 
   int sock_fdesc = server_socket.get_sock_fdesc();
+  return sock_fdesc;
+}
 
-  int len, bytes_sent;
-  len = strlen(nick);
-  bytes_sent = send(sock_fdesc, nick, len, 0);
-  len = strlen(user);
-  bytes_sent = send(sock_fdesc, user, len, 0);
+std::vector<ftxui::Element> render_messages(int sock_fd) {
+  using namespace ftxui;
 
-  while (1) {
-    std::cout << "\n new packet: \n";
-    char buf[2048];
-    int bytes_received;
-    bytes_received = recv(sock_fdesc, buf, sizeof buf, 0);
+  std::vector<irc_msg> recvd_messages = recv_msgs(sock_fd);
+  std::vector<message_visible> messages;
+  std::vector<Element> msg_render;
 
-    std::string str_buf = buf;
-    std::vector<std::string> messages;
-    while (str_buf.find("\n") != std::string::npos) {
-      messages.push_back(str_buf.substr(0, str_buf.find("\n")));
-      str_buf.erase(0, str_buf.find("\n")+1);
-    }
-
-    for (std::string raw_msg : messages) {
-      irc_msg msg = parse_msg(raw_msg);
-      if (msg.command=="PRIVMSG") {
-        std::cout << "\nprefix=" << msg.prefix << "\ncommand=" << msg.command << "\nparameters=\n";
-        for (std::string ss : msg.params) {
-          std::cout << ss << "\n";
-        }
-      }
-    }
+  for (irc_msg msg : recvd_messages) {
+    message_visible msgp;
+    msgp.origin = msg.prefix;
+    msgp.body = msg.params.back();
+    messages.push_back(msgp);
   }
+  for (message_visible msg : messages) {
+    msg_render.push_back(paragraph(msg.origin));
+    msg_render.push_back(paragraph(msg.body));
+    msg_render.push_back(separator());
+  }
+  return msg_render;
+}
+
+int main_ui(int sock_fdesc) {
+  using namespace ftxui;
+
+  auto screen = ScreenInteractive::Fullscreen();
+  std::string message_contents;
+  std::string button_send_label = "Send";
+  std::vector<Event> keys;
+
+  std::vector<std::string> options = {"one", "two", "three"};
+  int selectedOpt = 0;
+  MenuOption option;
+  option.on_enter = screen.ExitLoopClosure();
+ 
+  Component menu = Menu(&options, &selectedOpt, option);
+  Component input_message = Input(&message_contents, "send message");
+  Component button_send = Button(&button_send_label, screen.ExitLoopClosure(), ButtonOption::Ascii());
+
+  auto message_box = Container::Horizontal ({
+    input_message,
+    button_send,
+  });
+
+  auto components = Container::Vertical ({
+    message_box,
+    menu,
+  });
+ 
+  int a = 0;
+  auto renderer = Renderer(components, [&] {
+    a++;
+    return vbox ({
+  //    menu->Render(),
+      filler(),
+      vbox (
+        //std::thread t1(render_messages, sock_fdesc) 
+      ) | frame | vscroll_indicator | size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.8),
+      hbox(input_message->Render() | selectionBackgroundColor(Color::Blue), separator(), button_send->Render()) | borderLight | size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.1),
+    }) | borderHeavy;
+  });
+
+  renderer |= CatchEvent([&](Event event) {
+    if (event == Event::Character('\n')) {
+      screen.ExitLoopClosure()();
+      return true;
+    }
+    return false;
+  });
+ 
+  Loop loop(&screen, renderer);
+ 
+  while (!loop.HasQuitted()) {
+    loop.RunOnce();
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
+  }
+
+  //std::cout << message_contents << "\n" << selectedOpt;
+  return a;
 }
 
 int main() {
   //login_info connect_with = login();
-  //connect_irc(&connect_with);
-  std::string s = send_message();
-  std::cout << s;
+  login_info connect_with;
+  connect_with.nick = "cheese1";
+  connect_with.real_name = "a";
+  connect_with.password = "";
+
+  int sock_fd = connect_irc();
+  int irc_err = login_irc(&connect_with, sock_fd);
+  std::cout << main_ui(sock_fd);
+  
+  //std::string s = send_message();
+  //std::cout << s;
 }

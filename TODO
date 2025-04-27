@@ -5,11 +5,6 @@ Socket lib
 
 Parsing
   - add support for tags
-  - implement parsing
-
-TUI 
-  - figure out vim-keybind stuff
-  - basic UI with vim-style :commands and modes instead of menus and windows
 
 IRC Commands
   - NICK: set nickname
@@ -18,4 +13,4 @@ IRC Commands
   - PRIVMSG: message a target user or channel
   - JOIN: join a channel
 
-
+MAKEADALOOPSAWORK!!!
