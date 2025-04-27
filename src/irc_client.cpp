@@ -1,4 +1,5 @@
 #include <memory> 
+#include <future> 
 #include <string>
 #include <iostream>
 #include <vector>
@@ -214,7 +215,7 @@ std::vector<ftxui::Element> render_messages(int sock_fd) {
   return msg_render;
 }
 
-int main_ui(int sock_fdesc) {
+void main_ui(int sock_fdesc) {
   using namespace ftxui;
 
   auto screen = ScreenInteractive::Fullscreen();
@@ -241,13 +242,14 @@ int main_ui(int sock_fdesc) {
     menu,
   });
  
-  int a = 0;
   auto renderer = Renderer(components, [&] {
-    a++;
+    auto future = std::async(render_messages, sock_fdesc);
+    std::vector<Element> msg_render = future.get();
     return vbox ({
   //    menu->Render(),
       filler(),
       vbox (
+        msg_render
         //std::thread t1(render_messages, sock_fdesc) 
       ) | frame | vscroll_indicator | size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.8),
       hbox(input_message->Render() | selectionBackgroundColor(Color::Blue), separator(), button_send->Render()) | borderLight | size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.1),
@@ -270,7 +272,6 @@ int main_ui(int sock_fdesc) {
   }
 
   //std::cout << message_contents << "\n" << selectedOpt;
-  return a;
 }
 
 int main() {
@@ -282,7 +283,7 @@ int main() {
 
   int sock_fd = connect_irc();
   int irc_err = login_irc(&connect_with, sock_fd);
-  std::cout << main_ui(sock_fd);
+  main_ui(sock_fd);
   
   //std::string s = send_message();
   //std::cout << s;
