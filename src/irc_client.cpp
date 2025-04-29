@@ -5,6 +5,8 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "socket.cpp"
 #include <cstring>
@@ -16,7 +18,7 @@
 #include "ftxui/component/screen_interactive.hpp"
 #include "ftxui/dom/elements.hpp"  
 #include "ftxui/util/ref.hpp"
-#include "ftxui/component/loop.hpp"       // for Loop
+#include "ftxui/component/loop.hpp"
 
 struct login_info {
   std::string nick;
@@ -222,6 +224,7 @@ void main_ui(int sock_fdesc) {
   std::string message_contents;
   std::string button_send_label = "Send";
   std::vector<Event> keys;
+  std::vector<Element> msg_render;
 
   std::vector<std::string> options = {"one", "two", "three"};
   int selectedOpt = 0;
@@ -243,8 +246,7 @@ void main_ui(int sock_fdesc) {
   });
  
   auto renderer = Renderer(components, [&] {
-    auto future = std::async(render_messages, sock_fdesc);
-    std::vector<Element> msg_render = future.get();
+//	msg_render.reserve(msg_render.size() + new_msgs.size());
     return vbox ({
   //    menu->Render(),
       filler(),
@@ -267,6 +269,10 @@ void main_ui(int sock_fdesc) {
   Loop loop(&screen, renderer);
  
   while (!loop.HasQuitted()) {
+//    auto future = std::async(render_messages, sock_fdesc);
+//	std::vector<Element> new_msgs = future.get();
+	std::vector<Element> new_msgs = render_messages(sock_fdesc);
+	msg_render.insert(msg_render.end(), new_msgs.begin(), new_msgs.end());
     loop.RunOnce();
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
@@ -282,9 +288,7 @@ int main() {
   connect_with.password = "";
 
   int sock_fd = connect_irc();
+  fcntl(sock_fd, F_SETFL, O_NONBLOCK);
   int irc_err = login_irc(&connect_with, sock_fd);
   main_ui(sock_fd);
-  
-  //std::string s = send_message();
-  //std::cout << s;
 }
