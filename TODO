@@ -13,4 +13,5 @@ IRC Commands
   - PRIVMSG: message a target user or channel
   - JOIN: join a channel
 
-MAKEADALOOPSAWORK!!!
+UI
+	- custom element for messages 

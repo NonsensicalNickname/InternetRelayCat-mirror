@@ -72,7 +72,6 @@ std::string send_message() {
   auto screen = ScreenInteractive::TerminalOutput();
   std::string message_contents;
   std::string button_send_label = "Send";
-  std::vector<Event> keys;
   int mode = 0;
  
   Component input_message = Input(&message_contents, "send message");
@@ -169,7 +168,13 @@ struct login_info login() {
   return(submitted_details);
 }
 
-int login_irc(struct login_info *details, int sock_fd) {
+int connect_irc(struct login_info *details) {
+  u_long ip_bytes = htonl(inet_addr("94.125.182.252"));
+  Catsock::CSocket server_socket = Catsock::CSocket(AF_INET,SOCK_STREAM,0,6667,ip_bytes);
+
+  int sock_fdesc = server_socket.get_sock_fdesc();
+  fcntl(sock_fdesc, F_SETFL, O_NONBLOCK);
+
   std::string nick_string = "NICK "+details->nick+"\n";
   std::string user_string = "USER guest 8 * :"+details->real_name+"\n";
 
@@ -178,43 +183,33 @@ int login_irc(struct login_info *details, int sock_fd) {
 
   int len, bytes_sent;
   len = strlen(nick);
-  bytes_sent = send(sock_fd, nick, len, 0);
+  bytes_sent = send(sock_fdesc, nick, len, 0);
   len = strlen(user);
-  bytes_sent = send(sock_fd, user, len, 0);
-  return 1;
-  //std::string to_send = "PRIVMSG Guest98 :wahoo\n";
-  //const char *do_send=  to_send.c_str(); 
-  //len = strlen(do_send);
-  //bytes_sent = send(sock_fdesc, do_send, len, 0);
-}
-
-int connect_irc() {
-  u_long ip_bytes = htonl(inet_addr("94.125.182.252"));
-  Catsock::CSocket server_socket = Catsock::CSocket(AF_INET,SOCK_STREAM,0,6667,ip_bytes);
-
-  int sock_fdesc = server_socket.get_sock_fdesc();
+  bytes_sent = send(sock_fdesc, user, len, 0);
   return sock_fdesc;
 }
 
-std::vector<ftxui::Element> render_messages(int sock_fd) {
+ftxui::Element construct_msg(std::string origin, std::string body) {
   using namespace ftxui;
 
-  std::vector<irc_msg> recvd_messages = recv_msgs(sock_fd);
-  std::vector<message_visible> messages;
-  std::vector<Element> msg_render;
+  return vbox (
+	  paragraph(origin),
+	  paragraph(body),
+	  separator()
+  ) | flex;
+};
 
-  for (irc_msg msg : recvd_messages) {
-    message_visible msgp;
-    msgp.origin = msg.prefix;
-    msgp.body = msg.params.back();
-    messages.push_back(msgp);
+
+ftxui::Element render_messages(std::vector<irc_msg> msg_data) {
+  using namespace ftxui;
+
+  std::vector<Elements> constructed_msgs;
+
+  for (irc_msg msg : msg_data) {
+    constructed_msgs.push_back({construct_msg(msg.prefix, msg.params.back())});
   }
-  for (message_visible msg : messages) {
-    msg_render.push_back(paragraph(msg.origin));
-    msg_render.push_back(paragraph(msg.body));
-    msg_render.push_back(separator());
-  }
-  return msg_render;
+ 
+  return gridbox(constructed_msgs);
 }
 
 void main_ui(int sock_fdesc) {
@@ -223,8 +218,8 @@ void main_ui(int sock_fdesc) {
   auto screen = ScreenInteractive::Fullscreen();
   std::string message_contents;
   std::string button_send_label = "Send";
-  std::vector<Event> keys;
-  std::vector<Element> msg_render;
+  std::vector<irc_msg> msg_data;
+  float scroll_percent = 0.0f;
 
   std::vector<std::string> options = {"one", "two", "three"};
   int selectedOpt = 0;
@@ -246,14 +241,11 @@ void main_ui(int sock_fdesc) {
   });
  
   auto renderer = Renderer(components, [&] {
-//	msg_render.reserve(msg_render.size() + new_msgs.size());
     return vbox ({
   //    menu->Render(),
       filler(),
-      vbox (
-        msg_render
-        //std::thread t1(render_messages, sock_fdesc) 
-      ) | frame | vscroll_indicator | size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.8),
+      render_messages(msg_data) | focusPositionRelative(0, scroll_percent) | frame | vscroll_indicator 
+		| size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.8),
       hbox(input_message->Render() | selectionBackgroundColor(Color::Blue), separator(), button_send->Render()) | borderLight | size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.1),
     }) | borderHeavy;
   });
@@ -263,32 +255,33 @@ void main_ui(int sock_fdesc) {
       screen.ExitLoopClosure()();
       return true;
     }
+    if (event.mouse().button == Mouse::WheelUp && scroll_percent>=0.01) {
+	  scroll_percent-=0.01;
+      return true;
+    }
+    if (event.mouse().button == Mouse::WheelDown && scroll_percent<=0.99) {
+	  scroll_percent+=0.01;
+      return true;
+    }
     return false;
   });
  
   Loop loop(&screen, renderer);
  
   while (!loop.HasQuitted()) {
-//    auto future = std::async(render_messages, sock_fdesc);
-//	std::vector<Element> new_msgs = future.get();
-	std::vector<Element> new_msgs = render_messages(sock_fdesc);
-	msg_render.insert(msg_render.end(), new_msgs.begin(), new_msgs.end());
+	std::vector<irc_msg> new_msgs = recv_msgs(sock_fdesc);
+	msg_data.insert(msg_data.end(), new_msgs.begin(), new_msgs.end());
     loop.RunOnce();
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
-
-  //std::cout << message_contents << "\n" << selectedOpt;
 }
 
 int main() {
-  //login_info connect_with = login();
   login_info connect_with;
   connect_with.nick = "cheese1";
   connect_with.real_name = "a";
   connect_with.password = "";
 
-  int sock_fd = connect_irc();
-  fcntl(sock_fd, F_SETFL, O_NONBLOCK);
-  int irc_err = login_irc(&connect_with, sock_fd);
+  int sock_fd = connect_irc(&connect_with);
   main_ui(sock_fd);
 }
