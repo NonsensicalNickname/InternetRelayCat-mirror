@@ -6,8 +6,8 @@ Catsock::Socket::Socket(int family, int service, int protocol, int port, u_long 
   address.sin_port = htons(port);
   address.sin_addr.s_addr = htonl(interface);
 
-  sock_fdesc = socket(family, service, protocol);
-  check_connection(sock_fdesc);
+  sock_fd = socket(family, service, protocol);
+  check_connection(sock_fd);
 }
 
 void Catsock::Socket::check_connection(int val) {
@@ -20,8 +20,8 @@ void Catsock::Socket::check_connection(int val) {
 struct sockaddr_in Catsock::Socket::get_address() {
   return address;
 }
-int Catsock::Socket::get_sock_fdesc() {
-  return sock_fdesc;
+int Catsock::Socket::get_sock_fd() {
+  return sock_fd;
 }
 int Catsock::Socket::get_connection() {
  return connection;
@@ -34,22 +34,22 @@ Catsock::BSocket::BSocket(int family, int service, int protocol, int port, u_lon
   : Socket(family, service, protocol, port, interface) {
 
   int opt_on = 1;
-  setsockopt(get_sock_fdesc(), SOL_SOCKET, SO_REUSEADDR, &opt_on, sizeof opt_on);
-  set_connection(establish_connection(get_sock_fdesc(), get_address()));
+  setsockopt(get_sock_fd(), SOL_SOCKET, SO_REUSEADDR, &opt_on, sizeof opt_on);
+  set_connection(establish_connection(get_sock_fd(), get_address()));
   check_connection(get_connection());
 }
 
-int Catsock::BSocket::establish_connection(int sock_fdesc, struct sockaddr_in address) {
-  return bind(sock_fdesc, (struct sockaddr *)&address, sizeof address);
+int Catsock::BSocket::establish_connection(int sock_fd, struct sockaddr_in address) {
+  return bind(sock_fd, (struct sockaddr *)&address, sizeof address);
 }
 
 Catsock::CSocket::CSocket(int family, int service, int protocol, int port, u_long interface) 
   : Socket(family, service, protocol, port, interface) {
 
-  set_connection(establish_connection(get_sock_fdesc(), get_address()));
+  set_connection(establish_connection(get_sock_fd(), get_address()));
   check_connection(get_connection());
 }
 
-int Catsock::CSocket::establish_connection(int sock_fdesc, struct sockaddr_in address) {
-  return connect(sock_fdesc, (struct sockaddr *)&address, sizeof address);
+int Catsock::CSocket::establish_connection(int sock_fd, struct sockaddr_in address) {
+  return connect(sock_fd, (struct sockaddr *)&address, sizeof address);
 }

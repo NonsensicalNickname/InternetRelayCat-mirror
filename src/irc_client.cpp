@@ -7,6 +7,7 @@
 #include <thread>
 #include <unistd.h>
 #include <fcntl.h>
+#include <poll.h>
 
 #include "socket.cpp"
 #include <cstring>
@@ -172,8 +173,8 @@ int connect_irc(struct login_info *details) {
   u_long ip_bytes = htonl(inet_addr("94.125.182.252"));
   Catsock::CSocket server_socket = Catsock::CSocket(AF_INET,SOCK_STREAM,0,6667,ip_bytes);
 
-  int sock_fdesc = server_socket.get_sock_fdesc();
-  fcntl(sock_fdesc, F_SETFL, O_NONBLOCK);
+  int sock_fd = server_socket.get_sock_fd();
+  fcntl(sock_fd, F_SETFL, O_NONBLOCK);
 
   std::string nick_string = "NICK "+details->nick+"\n";
   std::string user_string = "USER guest 8 * :"+details->real_name+"\n";
@@ -183,10 +184,10 @@ int connect_irc(struct login_info *details) {
 
   int len, bytes_sent;
   len = strlen(nick);
-  bytes_sent = send(sock_fdesc, nick, len, 0);
+  bytes_sent = send(sock_fd, nick, len, 0);
   len = strlen(user);
-  bytes_sent = send(sock_fdesc, user, len, 0);
-  return sock_fdesc;
+  bytes_sent = send(sock_fd, user, len, 0);
+  return sock_fd;
 }
 
 ftxui::Element construct_msg(std::string origin, std::string body) {
@@ -212,7 +213,7 @@ ftxui::Element render_messages(std::vector<irc_msg> msg_data) {
   return gridbox(constructed_msgs);
 }
 
-void main_ui(int sock_fdesc) {
+void main_ui(int sock_fd) {
   using namespace ftxui;
 
   auto screen = ScreenInteractive::Fullscreen();
@@ -268,9 +269,17 @@ void main_ui(int sock_fdesc) {
  
   Loop loop(&screen, renderer);
  
+  struct pollfd pfds[1];
+  pfds[0].fd = sock_fd;
+  pfds[0].events = POLLIN;
+
   while (!loop.HasQuitted()) {
-	std::vector<irc_msg> new_msgs = recv_msgs(sock_fdesc);
-	msg_data.insert(msg_data.end(), new_msgs.begin(), new_msgs.end());
+	int num_events = poll(pfds, 1, 10);
+	if (num_events > 0) {
+	  std::vector<irc_msg> new_msgs = recv_msgs(sock_fd);
+	  msg_data.insert(msg_data.end(), new_msgs.begin(), new_msgs.end());
+	}
+
     loop.RunOnce();
     std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
