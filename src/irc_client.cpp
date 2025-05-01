@@ -67,7 +67,7 @@ struct message_visible {
   std::string body;
 };
 
-std::string send_message() {
+std::string send_message_ui() {
   using namespace ftxui;
  
   auto screen = ScreenInteractive::TerminalOutput();
@@ -169,6 +169,19 @@ struct login_info login() {
   return(submitted_details);
 }
 
+int send_message(int sock_fd, std::string message_body) {
+	const char *msg = message_body.c_str();
+	int len, bytes_sent;
+	int total_sent = 0;
+	len = strlen(msg);
+
+	while (total_sent < len) {
+		bytes_sent = send(sock_fd, msg, len, 0);
+		total_sent+= bytes_sent;
+	}
+	return total_sent;
+}
+
 int connect_irc(struct login_info *details) {
   u_long ip_bytes = htonl(inet_addr("94.125.182.252"));
   Catsock::CSocket server_socket = Catsock::CSocket(AF_INET,SOCK_STREAM,0,6667,ip_bytes);
@@ -184,11 +197,14 @@ int connect_irc(struct login_info *details) {
 
   int len, bytes_sent;
   len = strlen(nick);
-  bytes_sent = send(sock_fd, nick, len, 0);
+//  bytes_sent = send(sock_fd, nick, len, 0);
   len = strlen(user);
-  bytes_sent = send(sock_fd, user, len, 0);
+//  bytes_sent = send(sock_fd, user, len, 0);
+  bytes_sent = send_message(sock_fd, nick_string);
+  bytes_sent = send_message(sock_fd, user_string);
   return sock_fd;
 }
+
 
 ftxui::Element construct_msg(std::string origin, std::string body) {
   using namespace ftxui;
@@ -253,7 +269,15 @@ void main_ui(int sock_fd) {
 
   renderer |= CatchEvent([&](Event event) {
     if (event == Event::Character('\n')) {
-      screen.ExitLoopClosure()();
+      //screen.ExitLoopClosure()();
+	  std::string s = "PRIVMSG Guest36 :";
+	  std::string ss = "\n";
+	  std::string pr = ":testing ";
+	  std::string send = s.append(message_contents).append(ss);
+	  int bytes_sent = send_message(sock_fd, send);
+	  irc_msg msg_sent = parse_msg(pr.append(send));
+	  msg_data.push_back(msg_sent);
+	  message_contents = "";
       return true;
     }
     if (event.mouse().button == Mouse::WheelUp && scroll_percent>=0.01) {
@@ -264,6 +288,10 @@ void main_ui(int sock_fd) {
 	  scroll_percent+=0.01;
       return true;
     }
+	if (event == Event::Character('\e')) {
+	  screen.ExitLoopClosure()();
+	  return true;
+	}
     return false;
   });
  
@@ -287,7 +315,7 @@ void main_ui(int sock_fd) {
 
 int main() {
   login_info connect_with;
-  connect_with.nick = "cheese1";
+  connect_with.nick = "testing";
   connect_with.real_name = "a";
   connect_with.password = "";
 
