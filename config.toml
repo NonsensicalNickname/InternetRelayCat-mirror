@@ -1,0 +1,28 @@
+#things to configure:
+#	- login details
+#		- server [libera]
+#		- nick, user | pwd, status
+#	- channels
+#	- colour scheme
+#	- vim [false]
+
+vim_mode = false
+date_format = "dd/mm/yyyy" #accepts a '/' separated string containing mdy. yy for 2 digit year
+time_format = 24 #accepts 12 or 24 hour time
+
+[login]
+#index from tables defined below, i.e. 0 would refer to the first server defined
+default_server = 0 
+default_user = 0
+
+[[servers]]
+name = "Libera"
+ip = "94.125.182.252"
+channels = ["#esolangs", "#linux"]
+
+[[users]]
+nick = "test153"
+name = "thetester"
+pass = "cheesedtomeetyou"
+default_status = 8 #invisible
+

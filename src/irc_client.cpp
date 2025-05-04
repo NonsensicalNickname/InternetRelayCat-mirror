@@ -8,9 +8,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <poll.h>
+#include <cstring>
 
 #include "socket.cpp"
-#include <cstring>
+#include "config.cpp"
  
 #include "ftxui/component/captured_mouse.hpp"
 #include "ftxui/component/component.hpp"        
@@ -294,4 +295,5 @@ int main() {
 
     int sock_fd = connect_irc(&connect_with);
     main_ui(sock_fd);
+	return 0;
 }

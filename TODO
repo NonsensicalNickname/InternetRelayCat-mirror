@@ -6,10 +6,11 @@ Socket lib
 Parsing
   - add support for tags
 
+Config
+	- toml in cmake maybe probably
+
 UI 
-	- fucking settings or something
 	- perchance revive the vim dream
-	- colour scheme (and other settings but this first bc preeeety) loaded from config file into unorederd map i think
 
 IRC Commands
   - NICK: set nickname
