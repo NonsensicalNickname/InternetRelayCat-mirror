@@ -1,3 +1,4 @@
+
 #things to configure:
 #	- login details
 #		- server [libera]
@@ -14,6 +15,7 @@ time_format = 24 #accepts 12 or 24 hour time
 #index from tables defined below, i.e. 0 would refer to the first server defined
 default_server = 0 
 default_user = 0
+default_theme = 0
 
 [[servers]]
 name = "Libera"
@@ -26,3 +28,17 @@ name = "thetester"
 pass = "cheesedtomeetyou"
 default_status = 8 #invisible
 
+[[users]]
+nick = "wahoo!"
+name = "thetester"
+pass = "cheesedtomeetyou"
+default_status = 8 #invisible
+
+[[themes]]
+name = "red"
+highlighted = [255,0,0]
+msg_origin = [255,0,0]
+msg_body = [255,0,0]
+borders = [255,0,0]
+bg = [255,0,255]
+fg = [255,0,0]

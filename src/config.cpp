@@ -1,11 +1,12 @@
 #define TOML_IMPLEMENTATION
 #include "config.hpp"
 
-using namespace std::literals;
-namespace fs = std::filesystem;
-const char *conf_dir;
+ftxui::Decorator IRCat::Config::load_colour(std::string toml_el, toml::v3::node_view<toml::v3::node> *theme_tbl) {
+	auto *rgb_arr = theme_tbl->as_table()->at(toml_el).as_array();
+	return ftxui::color(ftxui::Color::RGB(rgb_arr->at(0).value_or(0),rgb_arr->at(1).value_or(0),rgb_arr->at(2).value_or(0)));
+}
 
-IRCat::Config::Config(std::string write) {
+IRCat::Config::Config() {
 
 	if (getenv("HOME") == 0) {
 		conf_dir = strcat(getpwuid(getuid())->pw_dir, "/.config/ircat");
@@ -24,13 +25,58 @@ IRCat::Config::Config(std::string write) {
 
 	conf_tbl = toml::parse_file(conf_fpath);
 
-	int login_server = conf_tbl["login"]["default_server"].value_or(0);
-	int login_user = conf_tbl["login"]["default_user"].value_or(0);
-	std::string_view sname = conf_tbl["servers"][login_server]["name"].value_or(""sv);
-	std::string_view uname = conf_tbl["users"][login_server]["nick"].value_or(""sv);
-	IRCat::Server server;
-	server.name = sname;
-	std::cout << server.name << "\n" << uname;
+	default_server  = conf_tbl["login"]["default_server"].value_or(0);
+	default_user = conf_tbl["login"]["default_user"].value_or(0);
+	default_theme = conf_tbl["login"]["default_theme"].value_or(0);
+	
+	auto server_tbl = conf_tbl["servers"][default_server];
+
+	server.name = server_tbl["name"].value_or(""sv);
+	server.ip_addr = server_tbl["ip"].value_or(""sv);
+	if (toml::array *server_channels = server_tbl["channels"].as_array()) {
+		for (auto it = server_channels->begin(); it != server_channels->end(); ++it) {
+			auto i = std::distance(server_channels->begin(), it); 
+			server.channels.push_back(server_channels->at(i).value_or(""));
+		}
+	}
+
+	if (toml::array *users_arr = conf_tbl["users"].as_array()) {
+		for (auto it = users_arr ->begin(); it != users_arr ->end(); ++it) {
+			auto i = std::distance(users_arr ->begin(), it); 
+			toml::table *user_tbl = users_arr->at(i).as_table();
+			IRCat::User user;
+			user.nick = user_tbl->at("nick").value_or(""sv);
+			user.real_name = user_tbl->at("name").value_or(""sv);
+			user.password = user_tbl->at("pass").value_or(""sv);
+			user.status = user_tbl->at("default_status").value_or(8);
+			users.push_back(user);
+		}
+	}
+
+	auto theme_tbl = conf_tbl["themes"][default_theme];
+
+	theme_name = theme_tbl["name"].value_or(""sv);
+	theme[IRCat::highlighted] = load_colour("highlighted", &theme_tbl);
+	theme[IRCat::msg_origin] = load_colour("msg_origin", &theme_tbl);
+	theme[IRCat::msg_body] = load_colour("msg_body", &theme_tbl);
+	theme[IRCat::borders] = load_colour("borders", &theme_tbl);
+	theme[IRCat::bg] = load_colour("bg", &theme_tbl);
+	theme[IRCat::fg] = load_colour("fg", &theme_tbl);
+
+	vim_mode = conf_tbl["vim_mode"].value_or(false);
+
 	//conf_file.open(conf_fpath.append("/config.toml"), std::ios::out);
 	//conf_file.close();
+	/*
+	vim_mode;
+	date_format;
+	year_digits;
+	time_format;
+	servers;
+	users;
+	default_server;
+	default_user;
+	theme;
+	*/
 }
+

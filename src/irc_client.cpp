@@ -172,9 +172,10 @@ int connect_irc(struct login_info *details) {
 ftxui::Element construct_msg(std::string origin, std::string body) {
     using namespace ftxui;
 
+	Decorator a = color(Color::RGB(0,255,0));
     return vbox (
 	    separator(),
-	    paragraph(origin),
+	    paragraph(origin) | a,
 	    paragraph(body)
     ) | flex;
 };
@@ -195,6 +196,7 @@ ftxui::Element render_messages(std::vector<irc_msg> msg_data) {
 void main_ui(int sock_fd) {
     using namespace ftxui;
 
+	IRCat::Config configuration = IRCat::Config();
     auto screen = ScreenInteractive::Fullscreen();
     std::string message_contents;
     std::string button_send_label = "Send";
@@ -226,8 +228,9 @@ void main_ui(int sock_fd) {
     //        menu->Render(),
             filler(),
             render_messages(msg_data) | focusPositionRelative(0, scroll_percent) | frame | vscroll_indicator 
-		| size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.85),
-	    separator() | notifColour,
+		| size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.8),
+	    //separator() | notifColour,
+		separator() | configuration.theme[IRCat::bg],
             hbox(
 		input_message->Render(),
 		separator(), 

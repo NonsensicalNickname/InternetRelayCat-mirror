@@ -9,17 +9,30 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <cstring>
+#include <unordered_map>
+
+#include "ftxui/dom/elements.hpp"    
 
 #define TOML_HEADER_ONLY 0
 #define TOML_ENABLE_FORMATTERS 0
 #include <toml++/toml.hpp>
 
+using namespace std::literals;
+namespace fs = std::filesystem;
 
 namespace IRCat {
 	enum DateFormat {
 		dmy,
 		mdy,
 		ymd,
+	};
+	enum Element {
+		msg_origin,
+		msg_body,
+		bg,
+		fg,
+		highlighted,
+		borders,
 	};
 	struct Server {
 		std::string name;
@@ -32,23 +45,28 @@ namespace IRCat {
 		std::string password;
 		int status;
 	};
-	struct Options {
-		bool vim_mode;
-		DateFormat date_format;
-		int year_digits;
-		int time_format;
-		std::vector<Server> servers;
-		std::vector<User> Users;
-		int default_server;
-		int default_user;
-	};
 	class Config {
 		private:
 			std::fstream conf_file;
 			toml::table conf_tbl;
+			const char *conf_dir;
+			ftxui::Decorator load_colour(std::string toml_el, toml::v3::node_view<toml::v3::node> *theme_tbl);
 		public:
-			Config(std::string write);
-			void write_options(Options options);
+			Config();
+			void write_options(); //replace to return toml++ error type
+			int active_theme;
+			//-----------------------------------
+			bool vim_mode;
+			DateFormat date_format;
+			int year_digits;
+			int time_format;
+			int default_server;
+			int default_user;
+			int default_theme;
+			Server server;
+			std::vector<User> users;
+			std::string theme_name;
+			std::unordered_map<Element, ftxui::Decorator> theme;
 	};
 }
 
