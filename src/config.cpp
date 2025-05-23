@@ -1,19 +1,22 @@
 #define TOML_IMPLEMENTATION
 #include "config.hpp"
 
-ftxui::Decorator IRCat::Config::load_colour(std::string toml_el, toml::v3::node_view<toml::v3::node> *theme_tbl) {
+ftxui::Color IRCat::Config::load_colour(std::string toml_el, toml::v3::node_view<toml::v3::node> *theme_tbl) {
 	auto *rgb_arr = theme_tbl->as_table()->at(toml_el).as_array();
-	return ftxui::color(ftxui::Color::RGB(rgb_arr->at(0).value_or(0),rgb_arr->at(1).value_or(0),rgb_arr->at(2).value_or(0)));
+	return ftxui::Color::RGB(rgb_arr->at(0).value_or(0),rgb_arr->at(1).value_or(0),rgb_arr->at(2).value_or(0));
 }
 
 IRCat::Config::Config() {
 
+	/*
 	if (getenv("HOME") == 0) {
 		conf_dir = strcat(getpwuid(getuid())->pw_dir, "/.config/ircat");
 	}
 	else {
 		conf_dir = strcat(getenv("HOME"), "/.config/ircat");
 	}
+	*/
+	conf_dir = "/home/ceri/.config/ircat";
 	std::string conf_fpath(conf_dir);
 	conf_fpath.append("/config.toml");
 

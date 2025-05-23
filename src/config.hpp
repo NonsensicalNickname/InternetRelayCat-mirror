@@ -50,7 +50,7 @@ namespace IRCat {
 			std::fstream conf_file;
 			toml::table conf_tbl;
 			const char *conf_dir;
-			ftxui::Decorator load_colour(std::string toml_el, toml::v3::node_view<toml::v3::node> *theme_tbl);
+			ftxui::Color load_colour(std::string toml_el, toml::v3::node_view<toml::v3::node> *theme_tbl);
 		public:
 			Config();
 			void write_options(); //replace to return toml++ error type
@@ -66,7 +66,7 @@ namespace IRCat {
 			Server server;
 			std::vector<User> users;
 			std::string theme_name;
-			std::unordered_map<Element, ftxui::Decorator> theme;
+			std::unordered_map<Element, ftxui::Color> theme;
 	};
 }
 

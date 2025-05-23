@@ -1,16 +1,7 @@
 Socket lib
-  - refactor to use getaddrinfo
   - go through and make sure things are checked for error return values
-  - Use enum or something instead of such much virtual function 
 
-Parsing
-  - add support for tags
-
-Config
-	- toml in cmake maybe probably
-
-UI 
-	- perchance revive the vim dream
+simple channel/target menu
 
 IRC Commands
   - NICK: set nickname
