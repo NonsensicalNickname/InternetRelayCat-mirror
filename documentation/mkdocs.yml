@@ -1,0 +1,12 @@
+site_name: Documentation for IRCat
+markdown_extensions:
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tilde
+
+theme:
+  name: material
