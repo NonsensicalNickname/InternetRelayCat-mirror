@@ -8,16 +8,13 @@
 #include "ftxui/component/screen_interactive.hpp"
 #include "ftxui/util/ref.hpp"
 #include "ftxui/component/loop.hpp"
+#include <string>
 
 
 int main() {
 	using namespace ftxui;
 
-	IRCat::handler::login_info connect_with;
-	connect_with.nick = "testing152";
-	connect_with.real_name = "a";
-	connect_with.password = "";
-	IRCat::handler handler = IRCat::handler(&connect_with);
+	IRCat::handler handler = IRCat::handler();
 
 	auto screen = ScreenInteractive::Fullscreen();
 	std::string message_contents;
@@ -26,28 +23,27 @@ int main() {
 	float scroll_percent = 0.0f;
 	auto notifColour = color(Color::Default);
 
-	std::vector<std::string> options = {"one", "two", "three"};
-	int selectedOpt = 0;
-	MenuOption option;
-	option.on_enter = screen.ExitLoopClosure();
+	std::vector<std::string> channel_entries = handler.server.channels;
+	int selected_channel = 0;
 
-	Component menu = Menu(&options, &selectedOpt, option);
+	Component channel_selector = Dropdown(&channel_entries, &selected_channel);
 	Component input_message = Input(&message_contents, "send message");
 	Component button_send = Button(&button_send_label, screen.ExitLoopClosure(), ButtonOption::Ascii());
 
 	auto message_box = Container::Horizontal ({
+			channel_selector,
 			input_message,
 			button_send,
 			});
 
 	auto components = Container::Vertical ({
 			message_box,
-			menu,
 			});
 
 	auto renderer = Renderer(components, [&] {
 			return vbox ({
 					//        menu->Render(),
+					channel_selector->Render(),
 					filler(),
 					handler.render_messages() | focusPositionRelative(0, scroll_percent) | frame | vscroll_indicator 
 					| size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.8),
@@ -63,7 +59,9 @@ int main() {
 
 	renderer |= CatchEvent([&](Event event) {
 			if (event == Event::Character('\n')) {
-				handler.send_user_msg(message_contents);
+				//std::string pr = ":testing PRIVMSG Guest36 :";
+				//pr.append(message_contents);
+				int bytes_sent = handler.send_user_msg(message_contents, channel_entries[selected_channel]);
 				message_contents = "";
 				return true;
 			}

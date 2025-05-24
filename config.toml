@@ -20,10 +20,10 @@ default_theme = 0
 [[servers]]
 name = "Libera"
 ip = "94.125.182.252"
-channels = ["#esolangs", "#linux"]
+channels = ["#esolangs", "#linux", "Guest36", "Guest45"]
 
 [[users]]
-nick = "test153"
+nick = "testing152"
 name = "thetester"
 pass = "cheesedtomeetyou"
 default_status = 8 #invisible
@@ -37,8 +37,9 @@ default_status = 8 #invisible
 [[themes]]
 name = "red"
 highlighted = [255,0,0]
-msg_origin = [255,0,0]
-msg_body = [255,0,0]
+msg_origin = [202,211,245]
+msg_body = [184,192,224]
 borders = [255,0,0]
-bg = [255,0,255]
-fg = [255,0,0]
+#bg = [110,115,141]
+bg = [36, 39, 59]
+fg = [147,154,183]

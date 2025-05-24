@@ -13,21 +13,22 @@
 namespace IRCat {
     class handler {
         private: 
-   //         struct sockaddr_in address;
 			struct irc_msg {
 				std::string prefix = "";
 				std::string command;
 				std::vector<std::string> params;
 			};
+
             int sock_fd;
-            int connection;
+			struct pollfd pfds[1];
+
 			struct irc_msg parse_msg(std::string s);
 			std::vector<irc_msg> recv_msgs();//int sock_fd) {
-			int send_message(std::string message_body);
 			ftxui::Element construct_msg(std::string origin, std::string body);
+			int send_message(std::string message_body);
+
 			IRCat::Config config_opts;
 			std::vector<irc_msg> msg_data;
-			struct pollfd pfds[1];
         public:
 			ftxui::Element render_messages();
 			struct login_info {
@@ -35,9 +36,12 @@ namespace IRCat {
 				std::string real_name;
 				std::string password;
 			};
-            handler(login_info* details);
+			struct IRCat::User user;
+			struct IRCat::Server server;
+            handler();//login_info* details);
 			bool poll_msgs();
-			void send_user_msg(std::string contents);
+			int send_user_msg(std::string contents, std::string channel);
+			void set_channel(std::string target);
     };
 }
 

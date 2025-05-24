@@ -1,31 +1,28 @@
 
 #include "handler.hpp"
+#include <string>
 
-IRCat::handler::handler(struct login_info *details) {
-    u_long ip_bytes = htonl(inet_addr("94.125.182.252"));
+IRCat::handler::handler() {
+	config_opts = IRCat::Config();
+	user = config_opts.users[config_opts.default_user];
+	server = config_opts.server;
+
+    u_long ip_bytes = htonl(inet_addr(server.ip_addr.c_str()));
     Catsock::CSocket server_socket = Catsock::CSocket(AF_INET,SOCK_STREAM,0,6667,ip_bytes);
 
     sock_fd = server_socket.get_sock_fd();
-	config_opts = IRCat::Config();
 
     fcntl(sock_fd, F_SETFL, O_NONBLOCK);
     pfds[0].fd = sock_fd;
     pfds[0].events = POLLIN;
 
-    std::string nick_string = "NICK "+details->nick+"\n";
-    std::string user_string = "USER guest 8 * :"+details->real_name+"\n";
+    std::string nick_string = "NICK "+user.nick+"\n";
+    std::string user_string = "USER guest "+std::to_string(user.status)+" * :"+user.real_name+"\n";
 
-    const char *nick = nick_string.c_str();
-    const char *user = user_string.c_str(); 
-
-    int len, bytes_sent;
-    len = strlen(nick);
-    len = strlen(user);
+    int bytes_sent;
 
     bytes_sent = send_message(nick_string);
-	std::cout << bytes_sent;
     bytes_sent = send_message(user_string);
-	std::cout << bytes_sent;
 }
 
 int IRCat::handler::send_message(std::string message_body) {
@@ -109,17 +106,22 @@ ftxui::Element IRCat::handler::render_messages() {
     std::vector<Elements> constructed_msgs;
 
     for (irc_msg msg : msg_data) {
-        constructed_msgs.push_back({construct_msg(msg.prefix, msg.params.back())});
+		if (msg.command != "PONG") {
+			constructed_msgs.push_back({construct_msg(msg.prefix, msg.params.back())});
+		}
+		else {
+			send_message(":PONG "+msg.params[0]);
+		}
     }
  
     return gridbox(constructed_msgs);
 }
 
-void IRCat::handler::send_user_msg(std::string contents) {
-	std::string pr = ":testing PRIVMSG Guest36 ";
-	pr.append(contents);
+int IRCat::handler::send_user_msg(std::string contents, std::string channel) {
+	std::string pr = ":testing PRIVMSG " + channel + " :"+contents+"\n";
 	int bytes_sent = send_message(pr);
 	msg_data.push_back(parse_msg(pr));
+	return bytes_sent;
 }
 
 bool IRCat::handler::poll_msgs() {
