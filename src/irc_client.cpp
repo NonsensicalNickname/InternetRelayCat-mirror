@@ -14,7 +14,8 @@
 int main() {
 	using namespace ftxui;
 
-	IRCat::handler handler = IRCat::handler();
+	IRCat::Handler handler = IRCat::Handler();
+	std::unordered_map<IRCat::Element, Color> colour_theme = handler.config_opts.theme;
 
 	auto screen = ScreenInteractive::Fullscreen();
 	std::string message_contents;
@@ -48,19 +49,17 @@ int main() {
 					handler.render_messages() | focusPositionRelative(0, scroll_percent) | frame | vscroll_indicator 
 					| size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.8),
 					//separator() | notifColour,
-					separator(),// | color(configuration.theme[IRCat::fg]),
+					separator() | color(colour_theme[IRCat::fg]),
 					hbox(
 							input_message->Render(),
 							separator(), 
 							button_send->Render()
 						) | borderLight | size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.1),
-					}) | borderHeavy;// | bgcolor(configuration.theme[IRCat::bg]);
+					}) | borderHeavy | bgcolor(colour_theme[IRCat::bg]);
 			});
 
 	renderer |= CatchEvent([&](Event event) {
 			if (event == Event::Character('\n')) {
-				//std::string pr = ":testing PRIVMSG Guest36 :";
-				//pr.append(message_contents);
 				int bytes_sent = handler.send_user_msg(message_contents, channel_entries[selected_channel]);
 				message_contents = "";
 				return true;

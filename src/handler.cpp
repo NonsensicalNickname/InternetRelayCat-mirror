@@ -2,7 +2,7 @@
 #include "handler.hpp"
 #include <string>
 
-IRCat::handler::handler() {
+IRCat::Handler::Handler() {
 	config_opts = IRCat::Config();
 	user = config_opts.users[config_opts.default_user];
 	server = config_opts.server;
@@ -16,8 +16,8 @@ IRCat::handler::handler() {
     pfds[0].fd = sock_fd;
     pfds[0].events = POLLIN;
 
-    std::string nick_string = "NICK "+user.nick+"\n";
-    std::string user_string = "USER guest "+std::to_string(user.status)+" * :"+user.real_name+"\n";
+    std::string nick_string = "NICK "+user.nick;
+    std::string user_string = "USER guest "+std::to_string(user.status)+" * :"+user.real_name;
 
     int bytes_sent;
 
@@ -25,8 +25,8 @@ IRCat::handler::handler() {
     bytes_sent = send_message(user_string);
 }
 
-int IRCat::handler::send_message(std::string message_body) {
-	const char *msg = message_body.c_str();
+int IRCat::Handler::send_message(std::string message_body) {
+	const char *msg = message_body.append("\n").c_str();
 	int len, bytes_sent;
 	int total_sent = 0;
 	len = strlen(msg);
@@ -38,7 +38,7 @@ int IRCat::handler::send_message(std::string message_body) {
 	return total_sent;
 }
 
-struct IRCat::handler::irc_msg IRCat::handler::parse_msg(std::string s) {
+struct IRCat::Handler::irc_msg IRCat::Handler::parse_msg(std::string s) {
     std::string trailing = "";
     irc_msg msg;
 
@@ -67,9 +67,7 @@ struct IRCat::handler::irc_msg IRCat::handler::parse_msg(std::string s) {
     return msg;
 }
 
-std::vector<IRCat::handler::irc_msg> IRCat::handler::recv_msgs() {
-    //std::cout << "\n new packet: \n";
-	//
+std::vector<IRCat::Handler::irc_msg> IRCat::Handler::recv_msgs() {
     char buf[2048];
     int bytes_received;
     bytes_received = recv(sock_fd, buf, sizeof buf, 0);
@@ -89,7 +87,7 @@ std::vector<IRCat::handler::irc_msg> IRCat::handler::recv_msgs() {
     return parsed_msgs;
 }
 
-ftxui::Element IRCat::handler::construct_msg(std::string origin, std::string body) {
+ftxui::Element IRCat::Handler::construct_msg(std::string origin, std::string body) {
     using namespace ftxui;
 
     return vbox (
@@ -100,7 +98,7 @@ ftxui::Element IRCat::handler::construct_msg(std::string origin, std::string bod
 };
 
 
-ftxui::Element IRCat::handler::render_messages() {
+ftxui::Element IRCat::Handler::render_messages() {
     using namespace ftxui;
 
     std::vector<Elements> constructed_msgs;
@@ -117,14 +115,14 @@ ftxui::Element IRCat::handler::render_messages() {
     return gridbox(constructed_msgs);
 }
 
-int IRCat::handler::send_user_msg(std::string contents, std::string channel) {
-	std::string pr = ":testing PRIVMSG " + channel + " :"+contents+"\n";
+int IRCat::Handler::send_user_msg(std::string contents, std::string channel) {
+	std::string pr = ":"+user.nick+" PRIVMSG " + channel + " :"+contents;
 	int bytes_sent = send_message(pr);
 	msg_data.push_back(parse_msg(pr));
 	return bytes_sent;
 }
 
-bool IRCat::handler::poll_msgs() {
+bool IRCat::Handler::poll_msgs() {
 	int num_events = poll(pfds, 1, 10);
 	if (num_events > 0) {
 		std::vector<irc_msg> new_msgs = recv_msgs();
