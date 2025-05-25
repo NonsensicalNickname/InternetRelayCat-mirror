@@ -1,0 +1,11 @@
+
+| Name | Type | Use | Example | Scope | (where applicable) Member values |
+| ---- | ---- | --- | ------- | ----- | ------------------------ |
+| user | struct User | Holding the nick, name, password, and status of the user for login. The nick is also used later to display above messages sent by the user. | `{"john from accounting", "john", "accounting-sucks-actually", 8}` | Public member of an object within main. | nick (string), real name (string), password (string), status (int) |
+| server | struct Server | Holding the name, ip address, and channels for the server that the user is connecting to. | `{"Libera", "94.125.182.252", ["#esolangs", "#linux", "Guest36"]}`| Public member of an object within main | name (string), ip address (string), channels (vector of strings). |
+| msg-data | Vector of struct irc-msg | Holding all of the messages that have been parsed in a format that enables easily accessing parts of the message for rendering messages. | `[{"lead.libera.chat", "NOTICE", ["john from accounting", "*** Looking up your hostname..."]}, {"john from accounting", "PRIVMSG", ["Gene", "I don't much like this accounting gig anymore"]}]` | Private member of object within main. | Member values of struct irc-msg: prefix (string, default = ""), command (string), params (vector of strings). |
+| sock-fd | int | Stores the file descriptor of the socket that the program is using. | `3` | Private member of object within main. | |
+| scroll-percent | float | Stores how far up or down the user has scrolled through the UI. | `0.5` | Main. | |
+| channel-entries | vector of strings | Stores the channels dictated by the server settings in the config file. Used for selecting the user or channel to message with a dropdown menu. | `["#esolangs", "#linux", #Guest36]"` | Main. | |
+| ip-bytes | long unsigned int | Stores the IP address of the server in a useful format. Converted from: string -> C-string -> long unsigned int -> long unsigned int in network-byte-order. | `1585297148` | Constructor of class Handler. | |
+| server-socket | class CSocket | Used for intitialising the socket and connecting to the server, as well as getting the socket file descriptor. | `CSocket(AF_INET, SOCK_STREAM, 0, 6667, 1585297148)` | Constructor of class Handler. | Address (struct sockaddr_in), sock-fd (int), connection (int). |
