@@ -47,7 +47,7 @@ int main() {
 					channel_selector->Render(),
 					filler(),
 					handler.render_messages() | focusPositionRelative(0, scroll_percent) | frame | vscroll_indicator 
-					| size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.8),
+					| size(HEIGHT, LESS_THAN, Terminal::Size().dimy * 0.75),
 					//separator() | notifColour,
 					separator() | color(colour_theme[IRCat::fg]),
 					hbox(

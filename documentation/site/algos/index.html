@@ -1,0 +1,586 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="..">
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>Algorithms and Modelling - Documentation for IRCat</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#algorithms-and-modelling" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Documentation for IRCat" class="md-header__button md-logo" aria-label="Documentation for IRCat" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation for IRCat
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Algorithms and Modelling
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Documentation for IRCat" class="md-nav__button md-logo" aria-label="Documentation for IRCat" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation for IRCat
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    InternetRelayCat
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Algorithms and Modelling
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Algorithms and Modelling
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#structure-chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Structure Chart
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pseudocode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pseudocode
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#structure-chart" class="md-nav__link">
+    <span class="md-ellipsis">
+      Structure Chart
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Notation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pseudocode" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pseudocode
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="algorithms-and-modelling">Algorithms and Modelling</h1>
+<h2 id="structure-chart">Structure Chart</h2>
+<p><img alt="Structure Chart" src="../assets/structure_chart.drawio.svg" /></p>
+<h2 id="notation">Notation</h2>
+<ul>
+<li>Keywords are capitalised.</li>
+<li>Subroutines in the code are underlined.</li>
+<li>Subroutines from an external source (i.e. the C++ standard library, FTXUI, or tomlplusplus) are italicised.</li>
+<li>Subroutine definitions are bold and underlined</li>
+<li>Notation for indexing uses square brackets, and literal strings are denoted with quotation marks</li>
+</ul>
+<h2 id="pseudocode">Pseudocode</h2>
+<pre>
+<font size=3>
+BEGIN MAINPROGRAM  
+    INITIALISATION  
+        set handler to <u>handler-constructor</u>   
+        set colour-theme to handler.config.theme  
+        set screen to <i>interactive-fullscreen-constructor</i>  
+        set UI elements to default states  
+    END INITIALISATION  
+    WHILE running
+        <u>render-elements</u>  
+        CASEWHERE <i>catch-event</i> is  
+            carriage return : <u>send-message</u> (message-content)  
+            mousewheel up :   
+                IF scroll-amount is not lowest THEN  
+                    decrease scroll-amount  
+                ENDIF  
+            mousewheel down :   
+                IF scroll-amount is not highest THEN  
+                    increase scroll-amount  
+                ENDIF  
+            escape : quit program  
+        ENDCASE  
+        IF <u>poll-for-messages</u> returns true THEN  
+            <u>receive-messages</u>  
+            <i>refresh-screen</i>  
+        ENDIF  
+    ENDWHILE
+END MAINPROGRAM  
+
+BEGIN SUBPROGRAM <h4 style="display: inline"><u>handler-constructor</u></h4>  
+    INITIALISATION  
+        set config to <u>config-constructor</u>  
+        set user to config.users[default-user]  
+        set server to config.server[default-server]  
+        set server-ip to <i>convert to useable type</i> (server.ip-address)  
+        set server-socket to <u>socket-constructor</u> (IPV4, TCP-socket, any, 6667, server-ip)  
+        set socket-file-descriptor to server-socket.get-socket-fd  
+    END INITIALISATION  
+    <i>set socket to non-blocking</i> (socket-file-descriptor)  
+    <u>send-message</u> (nick command)  
+    <u>send-message</u> (user command)  
+END SUBPROGRAM <u>handler-constructor</u>  
+
+BEGIN SUBPROGRAM <h4 style="display: inline"><u>config-constructor</u></h4>  
+    INITIALISATION  
+        IF config file doesn't exist THEN  
+            create config file with defaults  
+        ENDIF  
+        set config-location to <i>get home directory</i>/.config/ircat/config/toml  
+    END INITIALISATION  
+    set config to <i>parse toml file</i>  
+END SUBPROGRAM <u>config-constructor</u>  
+
+BEGIN SUBPROGRAM <h4 style="display: inline"><u>socket-constructor</u></h4> (address-family, socket-type,  
+                                            protocol, port, ip-address)  
+    INITIALISATION  
+        set member values to parameters  
+    END INITIALISATION  
+    IF set socket-file-descriptor to <i>socket</i> (family, socket-type, protocol) returns an error THEN  
+        print error-message  
+    ENDIF  
+    IF socket-purpose is binding THEN  
+        <i>set socket option</i> (reuse address, true)  
+        <i>bind socket</i>   
+    ELSE   
+        <i>connect socket</i>  
+    ENDIF  
+END SUBPROGRAM <u>socket-constructor</u>  
+
+BEGIN SUBPROGRAM <h4 style="display: inline"><u>send-message</u></h4> (content)  
+    set bytes-sent to 0  
+    set total-sent to 0  
+    set length to length of content  
+    WHILE total-sent < length  
+        <i>send</i> (content)  
+        set bytes-sent to return value of <i>send</i>  
+        set total-sent to total-sent + bytes-sent  
+    ENDWHILE  
+END SUBPROGRAM <u>send-message</u>  
+
+BEGIN SUBPROGRAM <h4 style="display: inline"><u>poll-for-messages</u></h4>  
+    set events-count to <i>poll</i> (socket-file-descriptor)  
+    IF events-count > 0 THEN  
+        append <u>receive-messages</u> to messages  
+        return true  
+    ENDIF  
+END SUBPROGRAM <u>poll-for-messages</u>  
+
+BEGIN SUBPROGRAM <h4 style="display: inline"><u>receive-messages</u></h4>  
+    set buffer to array of 2048 characters  
+    set bytes-received to 0  
+    set messages to empty vector of strings  
+    set parsed-messages to empty vector of irc-messages   
+    <i>recv</i> (socket-file-descriptor, buffer)  
+    set bytes-received to return value of <i>recv</i>  
+    WHILE there are carriage returns in buffer   
+        append a slice of the buffer from the start until the next carriage return to messages  
+        remove that slice of the buffer including the carriage return  
+    ENDWHILE  
+    FOR message IN messages   
+        append <u>parse-message</u> (message) to parsed-messsages  
+    ENDFOR  
+    return parsed-messages  
+END SUBPROGRAM <u>receive-messages</u>  
+
+BEGIN SUBPROGRAM <h4 style="display: inline"><u>parse-message</u></h4> (message)  
+    set trailing to empty string  
+    set result to empty irc-message  
+    IF message size < 1 THEN  
+        return result  
+    ENDIF  
+    IF message[0] is a ":" THEN  
+        set result.prefix to the slice of message between 1 and the first space  
+        remove that slice from message  
+    ENDIF  
+    set result.command to the slice of message from the start until the first space  
+    remove that slice from message  
+    IF message contains " :" THEN  
+        set trailing to the slice of message from after " :" until the end  
+        remove that slice from message  
+    ENDIF  
+    WHILE there are spaces in message  
+        append the slice of message from the start until the first space to result.params  
+        remove that slice from message  
+    ENDWHILE  
+    IF there are still characters in message THEN  
+        append message to result.params  
+    ENDIF  
+    append trailinig to result.params  
+    return result  
+END SUBPROGRAM <u>parse-message</u>   
+
+BEGIN SUBPROGRAM <h4 style="display: inline"><u>render-elements</u></h4>  
+    set message-box to <i>horizontal box</i> (individual-components)
+    set components to <i>vertical box</i> (message-box)
+    <i>render</i> (<u>render-messages</u>)
+    <i>render</i> (components)
+END SUBPROGRAM <u>render-elements</u>  
+
+BEGIN SUBPROGRAM <h4 style="display: inline"><u>render-messages</u></h4>  
+    set rendered to vector of elements
+    FOR message in messages
+        append <i>vertical box</i> (separator-bar, message.prefix, msg.params[last]) to rendered
+    ENDFOR
+    return rendered
+END SUBPROGRAM <u>render-messages</u>  
+</font>
+</pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>

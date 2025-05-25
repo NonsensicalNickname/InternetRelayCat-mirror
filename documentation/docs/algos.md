@@ -1,10 +1,23 @@
-# Pseudocode
+# Algorithms and Modelling
 
+## Structure Chart
+
+![Structure Chart](assets/structure_chart.drawio.svg)
+
+## Notation
++ Keywords are capitalised.
++ Subroutines in the code are underlined.
++ Subroutines from an external source (i.e. the C++ standard library, FTXUI, or tomlplusplus) are italicised.
++ Subroutine definitions are bold and underlined
++ Notation for indexing uses square brackets, and literal strings are denoted with quotation marks
+
+
+## Pseudocode 
 <pre>
 <font size=3>
 BEGIN MAINPROGRAM  
     INITIALISATION  
-        set handler to <h4 style="display: inline"><u>handler-constructor</u></h4>   
+        set handler to <u>handler-constructor</u>   
         set colour-theme to handler.config.theme  
         set screen to <i>interactive-fullscreen-constructor</i>  
         set UI elements to default states  
@@ -147,11 +160,8 @@ BEGIN SUBPROGRAM <h4 style="display: inline"><u>render-messages</u></h4>
     ENDFOR
     return rendered
 END SUBPROGRAM <u>render-messages</u>  
-
 </font>
-</pre>  
-  
-  
+</pre>   
   
   
   
