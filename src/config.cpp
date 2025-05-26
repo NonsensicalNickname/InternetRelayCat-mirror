@@ -8,25 +8,32 @@ ftxui::Color IRCat::Config::load_colour(std::string toml_el, toml::v3::node_view
 
 IRCat::Config::Config() {
 
-	/*
+	 
 	if (getenv("HOME") == 0) {
-		conf_dir = strcat(getpwuid(getuid())->pw_dir, "/.config/ircat");
+		conf_dir = std::string(getpwuid(getuid())->pw_dir);
 	}
 	else {
-		conf_dir = strcat(getenv("HOME"), "/.config/ircat");
+		conf_dir = std::string(getenv("HOME"));
 	}
-	*/
-	conf_dir = "/home/ceri/.config/ircat";
-	std::string conf_fpath(conf_dir);
-	conf_fpath.append("/config.toml");
+	conf_dir.append("/.config/ircat");
+//	conf_dir = "/home/ceri/.config/ircat";
 
 	struct stat buffer;	
-	if (stat(conf_dir, &buffer) != 0) {
+	if (stat(conf_dir.c_str(), &buffer) != 0) {
 		fs::create_directory(conf_dir);
-		fs::copy_file("../config.toml", conf_fpath);
+		conf_dir.append("/config.toml");
+		fs::copy_file("../config.toml", conf_dir);
+	}
+	else {
+		conf_dir.append("/config.toml");
 	}
 
-	conf_tbl = toml::parse_file(conf_fpath);
+	try {
+		conf_tbl = toml::parse_file(conf_dir);
+	}
+	catch (const toml::parse_error &err) {
+		std::cerr << err;
+	}
 
 	default_server  = conf_tbl["login"]["default_server"].value_or(0);
 	default_user = conf_tbl["login"]["default_user"].value_or(0);

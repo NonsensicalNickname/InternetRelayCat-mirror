@@ -1,8 +1,9 @@
-# Development
+# Requirements and Development
 
 ## Requirements
 
-The use case of the project is for communication for group coordination in the context of education. Thus, a lightweight solution prioritising core functionality and maintaining usability on old or low-end systems is ideal. Furthermore, support for a degree of customisation including colour schemes is important in that getting a number of people to use the same thing is hard since people have different opinions. To that end, using a reliable and established protocol as opposed to implementing a new one is ideal, as this means that users may use other clients (even if it makes me sad). 
+The use case of the project is for communication for group coordination in the context of programming and computer science education.
+Thus, a lightweight solution prioritising core functionality and maintaining usability on old or low-end systems is ideal. Furthermore, support for a degree of customisation including colour schemes is important in that getting a number of people to use the same thing is hard since people have different opinions. To that end, using a reliable and established protocol as opposed to implementing a new one is ideal, as this means that users may use other clients (even if it makes me sad). 
 Hence, the project should consist of a terminal based Internet Relay Chat (IRC) client, as this meets all of the aforementioned needs. (The largest drawback to this approach is that, as a result of the passing of time, many students are not familiar with IRC).
 
 ## Specification
@@ -35,7 +36,7 @@ The use of debugging tools has been mostly limited to:
 
 ## Errors
 
-The main sources of errors were pointer shenanigans with tomlplusplus, and lambda shenanigans with FTXUI (largely due to initial confusion fromthe shorthand that the library uses). The former errrors were generally able to be resolved either from the compiler output, or by consulting the documentation. 
+The main sources of errors were pointer shenanigans with tomlplusplus, and lambda shenanigans with FTXUI (largely due to initial confusion from the shorthand that the library uses). The former errrors were generally able to be resolved either from the compiler output, or by consulting the documentation. 
 The latter sources of errors were more infuriating, primarily due to the documentation not always existing, however the numerous examples and convenient module headers were mostly sufficient to resolve things in a timely manner. The aforementioned errors were primarily syntax errors, however at times they simply led to undefined or unexpected behaviour.   
 
 The most common logic errors were caused by how the messages were rendered.  

@@ -8,8 +8,8 @@
 + Keywords are capitalised.
 + Subroutines in the code are underlined.
 + Subroutines from an external source (i.e. the C++ standard library, FTXUI, or tomlplusplus) are italicised.
-+ Subroutine definitions are bold and underlined
-+ Notation for indexing uses square brackets, and literal strings are denoted with quotation marks
++ Subroutine definitions are bold and underlined.
++ Notation for indexing uses square brackets, and literal strings are denoted with quotation marks.
 
 
 ## Pseudocode 

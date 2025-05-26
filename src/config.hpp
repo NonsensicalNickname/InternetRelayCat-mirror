@@ -49,7 +49,7 @@ namespace IRCat {
 		private:
 			std::fstream conf_file;
 			toml::table conf_tbl;
-			const char *conf_dir;
+			std::string conf_dir;
 			ftxui::Color load_colour(std::string toml_el, toml::v3::node_view<toml::v3::node> *theme_tbl);
 		public:
 			Config();

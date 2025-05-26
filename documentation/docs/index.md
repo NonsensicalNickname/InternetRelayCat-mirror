@@ -2,7 +2,25 @@
 
 ## About
 
-InternetRelayCat (IRCat) is an IRC client written in C++ that provides basic functionality and can look passable.
+[InternetRelayCat](https://codeberg.org/ceridwen15/InternetRelayCat) (IRCat) is an IRC client written in C++ that provides basic functionality and can look passable.  
+This site uses [mkdocs material](https://github.com/squidfunk/mkdocs-material) to generate a static site from markdown, and is hosted using cloudflare pages (not for any particular reason, and I was tempted to just use neocities, but cloudflare pages has a nice and convenient CLI).  
+If, for whatever reason, you do not like it, the raw contents can be found in the associated Google doc.
+
+## Demos
+
++ [Usage demo](https://codeberg.org/ceridwen15/InternetRelayCat/src/branch/main/demo/demo.mp4)
++ [(very aesthetically upsetting) Theme config demo](https://codeberg.org/ceridwen15/InternetRelayCat/src/branch/main/demo/theme.mp4)
+
+## Installation
+
+As stated in other places in the documentation, this only runs on Linux. That said, simply cloning the repo and building it with  
+`mkdir build &&& cd build`  
+`cmake ..`  
+`make`  
+
+should work. If it doesnt, install tomlplusplus as a system package (i.e. `sudo Pacman -S tomlplusplus`).
+IRCat will not work if there is not a config file. The repo provides an example which should be copied to ~/.config/ircat/config.toml
+
 
 ## Features
 
