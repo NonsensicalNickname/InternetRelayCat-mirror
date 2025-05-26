@@ -1,3 +1,3 @@
 # InternetRelayCat
 
-shitty irc client :3
+A terminal-based IRC client for Linux.
