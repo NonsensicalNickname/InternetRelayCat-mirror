@@ -11,7 +11,7 @@ Hence, the project should consist of a terminal based Internet Relay Chat (IRC) 
 | Decision | Justification |
 | -------- | ------------- |
 | The project shall be written in C++ | The task says "high level, object oriented". This means no Rust, and I don't enjoy using Python for purposes beyond scripting. I should also learn and practice more C++. In regards to the requirements, C++ is conducive to relatively fast and light programs, and the language has widespread support. Furthermore, C++ allows direct use of syscalls written in C, which, while present in other languages, is very convenient. This helps notably with socket programming without a library. |
-| The project shall only work on Linux. | <ul><li>Socket programming in Windows is notably different.</li><li>When it comes to platforms with less differences (i.e. openBSD or other BSD-based OSes), I do not think many highschool students are daily-driving openBSD.</li><li>While I did have a functioning and sensibly set up VM for Windows at one point, that point was a fair while ago, and troubleshooting issues with virtual machines is not the most joyous experience.</li><li>Whilst this may be at odds with the goal of compatability, within the context of programming and education, I think it is actually a net positive. This is to say, make the children learn Linux, it will be good for their souls.</li></ul>
+| The project shall only work on Linux. | <ul><li>Socket programming in Windows is notably different.</li><li>When it comes to platforms with less differences (i.e. openBSD or other BSD-based OSes), I do not think many highschool students are daily-driving openBSD.</li><li>While I did have a functioning and sensibly set up VM for Windows at one point, that point was a fair while ago, and troubleshooting issues with virtual machines is not the most joyous experience.</li><li>Whilst this may be at odds with the goal of compatibility, within the context of programming and education, I think it is actually a net positive. This is to say, make the children learn Linux, it will be good for their souls.</li></ul>
 | The UI library shall be FTXUI. | The requirements for a UI library (since writing my own is beyond the scope of this project) are simple: C++, terminal-based, and with good documentation. FTXUI has all of these attributes to varying extents (the gaps in the documentation are filled by the fact that the header files for the different modules are very easy to read). |
 | The config file shall be written in toml. | It is very readable but is still actually used, which is a good balance for software which students who may be new to programming might use. |
 | The parsing of the config file shall be done using tomlplusplus. | It works, and I already knew it existed. |
@@ -19,7 +19,7 @@ Hence, the project should consist of a terminal based Internet Relay Chat (IRC) 
 
 ## Outline
 
-IRCat is written in C++, and relies on FTXUI and tomlplusplus for handling the terminal UI rendering and parsing toml files resepectively.
+IRCat is written in C++, and relies on FTXUI and tomlplusplus for handling the terminal UI rendering and parsing toml files respectively.
 The dependencies are managed using CMake. 
 The project is structured into an abstract sockets class with implementations for connecting and binding sockets, a config class which parses the config file and stores the resultant data, and a handler class which is responsible for the 'backend' - interacting with the server and using the config and socket classes. The UI is currently handled in the main program file, which instances a handler object to send and receive messages.  
 For more information, see [the source code](https://codeberg.org/ceridwen15/InternetRelayCat).
@@ -36,7 +36,7 @@ The use of debugging tools has been mostly limited to:
 
 ## Errors
 
-The main sources of errors were pointer shenanigans with tomlplusplus, and lambda shenanigans with FTXUI (largely due to initial confusion from the shorthand that the library uses). The former errrors were generally able to be resolved either from the compiler output, or by consulting the documentation. 
+The main sources of errors were pointer shenanigans with tomlplusplus, and lambda shenanigans with FTXUI (largely due to initial confusion from the shorthand that the library uses). The former were generally able to be resolved either from the compiler output, or by consulting the documentation. 
 The latter sources of errors were more infuriating, primarily due to the documentation not always existing, however the numerous examples and convenient module headers were mostly sufficient to resolve things in a timely manner. The aforementioned errors were primarily syntax errors, however at times they simply led to undefined or unexpected behaviour.   
 
 The most common logic errors were caused by how the messages were rendered.  
