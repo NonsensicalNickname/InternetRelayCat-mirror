@@ -1,4 +1,6 @@
 site_name: Documentation for IRCat
+repo_url: https://codeberg.org/ceridwen15/InternetRelayCat
+repo_name: InternetRelayCat
 markdown_extensions:
   - def_list
   - pymdownx.tasklist:

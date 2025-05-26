@@ -9,7 +9,7 @@ If, for whatever reason, you do not like it, the raw contents can be found in th
 ## Demos
 
 + [Usage demo](https://codeberg.org/ceridwen15/InternetRelayCat/src/branch/main/demo/demo.mp4)
-+ [(very aesthetically upsetting) Theme config demo](https://codeberg.org/ceridwen15/InternetRelayCat/src/branch/main/demo/theme.mp4)
++ [(very aesthetically upsetting) Theme config demo](https://codeberg.org/ceridwen15/InternetRelayCat/src/branch/main/demo/themes.mp4)
 
 ## Installation
 
